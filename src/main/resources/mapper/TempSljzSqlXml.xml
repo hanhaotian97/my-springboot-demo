@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hht.myspringbootdemo.dao.TempSljzMapper">
+
+    <!--#上海、江苏、浙江 提现金额大于等于5000的人员信息-->
+    <select id="listAccountAll" resultType="java.lang.String">
+        SELECT takeTab.userAccount
+        FROM a_count_recharge_take_tab AS takeTab, a_out_idcard_tab AS idCardTab
+        WHERE takeTab.takeCashAmount >= 5000
+        AND (idCardTab.idCardNo LIKE '32%' OR idCardTab.idCardNo LIKE '33%')
+        AND idCardTab.userId = takeTab.userId
+        ORDER BY idCardTab.idCardNo;
+    </select>
+
+    <select id="listAccountById" resultType="java.lang.String" parameterType="integer">
+        SELECT takeTab.userAccount
+        FROM a_count_recharge_take_tab AS takeTab, a_out_idcard_tab AS idCardTab
+        WHERE  (idCardTab.idCardNo LIKE '32%' OR idCardTab.idCardNo LIKE '33%')
+        AND idCardTab.userId = takeTab.userId
+            AND idCardTab.userId IN
+            <foreach collection="list" open="(" item="item" close=")" separator="," >
+                #{item}
+            </foreach>
+        ORDER BY idCardTab.idCardNo;
+    </select>
+
+
+
+    <!--#本人信息-->
+    <select id="getAccount" parameterType="string" resultType="com.hht.myspringbootdemo.entity.TempSljzUserDTO">
+    SELECT userTab.userAccount, userTab.boundPhoneNumber, idCardTab.idCardName, idCardTab.idCardNo, userTab.upOne
+    FROM a_count_user_tab AS userTab, a_out_idcard_tab AS idCardTab
+    WHERE userTab.userAccount = #{account}
+    AND userTab.userAccount = idCardTab.userAccount;
+    </select>
+
+    <!--#上级信息-->
+    <select id="getAccountUp" parameterType="string" resultType="com.hht.myspringbootdemo.entity.TempSljzUserDTO">
+        SELECT userTab.userAccount, userTab.boundPhoneNumber, idCardTab.idCardName, idCardTab.idCardNo, userTab.upOne
+        FROM a_count_user_tab AS userTab
+        LEFT JOIN a_out_idcard_tab AS idCardTab ON userTab.userAccount = idCardTab.userAccount
+        WHERE userTab.userAccount = (SELECT userTab.upOne
+        FROM a_count_user_tab AS userTab, a_out_idcard_tab AS idCardTab
+        WHERE userTab.userAccount = #{account}
+        AND userTab.userAccount = idCardTab.userAccount);
+    </select>
+
+    <!--#下一级信息-->
+    <select id="getAccountDownOne" parameterType="string" resultType="com.hht.myspringbootdemo.entity.TempSljzUserDTO">
+    SELECT userTab.userAccount, userTab.boundPhoneNumber, idCardTab.idCardName, idCardTab.idCardNo, userTab.upOne
+    FROM a_count_user_tab AS userTab LEFT JOIN a_out_idcard_tab AS idCardTab ON userTab.userAccount = idCardTab.userAccount
+    WHERE userTab.upOne = #{account};
+    </select>
+
+    <!--#下二级信息-->
+    <select id="getAccountDownTwo" parameterType="string" resultType="com.hht.myspringbootdemo.entity.TempSljzUserDTO">
+    SELECT userTab.userAccount, userTab.boundPhoneNumber, idCardTab.idCardName, idCardTab.idCardNo, userTab.upOne
+    FROM a_count_user_tab AS userTab LEFT JOIN a_out_idcard_tab AS idCardTab ON userTab.userAccount = idCardTab.userAccount
+    WHERE userTab.upTwo = #{account};
+    </select>
+
+    <!--#下三级信息-->
+    <select id="getAccountDownThree" parameterType="string" resultType="com.hht.myspringbootdemo.entity.TempSljzUserDTO">
+    SELECT userTab.userAccount, userTab.boundPhoneNumber, idCardTab.idCardName, idCardTab.idCardNo, userTab.upOne
+    FROM a_count_user_tab AS userTab LEFT JOIN a_out_idcard_tab AS idCardTab ON userTab.userAccount = idCardTab.userAccount
+    WHERE userTab.upThere = #{account};
+    </select>
+
+</mapper>

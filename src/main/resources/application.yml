@@ -1,0 +1,39 @@
+server:
+  port: 8080
+
+spring:
+  application:
+      name: hthtgl
+  # 选择加载不同环境的配置文件
+  profiles:
+    active: dev
+    include: mvc, data, config
+  # 配置热部署
+  devtools:
+    restart:
+      # 是否开启开发者工具
+      enabled: false
+  # 数据库连接配置
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/temp?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=true
+    username: root
+    password: 1qaz2wsx
+  main:
+      allow-bean-definition-overriding: true
+
+
+pagehelper:
+  helperDialect: mysql
+
+package:
+  type: jar
+
+# logback
+log:
+  path:
+    level: INFO
+
+mybatis:
+  mapper-locations: classpath*:mapper/*.xml
+logging:
+  file: log4jdbc.log4j2.properties

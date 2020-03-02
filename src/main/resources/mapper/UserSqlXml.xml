@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.hht.myspringbootdemo.dao.UserDao">
+
+    <resultMap type="com.hht.myspringbootdemo.entity.User" id="UserMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="addtime" column="addTime" jdbcType="TIMESTAMP"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="UserMap">
+        select
+          id, name, status, addTime
+        from test.user_tab
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="UserMap">
+        select
+          id, name, status, addTime
+        from test.user_tab
+        limit #{offset}, #{limit}
+    </select>
+
+    <!--通过实体作为筛选条件查询-->
+    <select id="queryAll" resultMap="UserMap">
+        select
+          id, name, status, addTime
+        from test.user_tab
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="name != null and name != ''">
+                and name = #{name}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="addtime != null">
+                and addTime = #{addtime}
+            </if>
+        </where>
+    </select>
+    <select id="getUserRecord" resultType="java.util.Map">
+        SELECT id, number from user_record_tab
+        WHERE id = 1
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into test.user_tab(name, status, addTime)
+        values (#{name}, #{status}, #{addtime})
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update test.user_tab
+        <set>
+            <if test="name != null and name != ''">
+                name = #{name},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="addtime != null">
+                addTime = #{addtime},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <update id="updateUser">
+        UPDATE user_tab
+        SET name = "hht12312312"
+        WHERE id = 1
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from test.user_tab where id = #{id}
+    </delete>
+
+</mapper>

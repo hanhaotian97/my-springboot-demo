@@ -1,0 +1,44 @@
+plugins {
+	id 'org.springframework.boot' version '2.1.7.RELEASE'
+	id 'io.spring.dependency-management' version '1.0.7.RELEASE'
+	id 'java'
+}
+
+group = 'com.hht'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '1.8'
+
+repositories {
+	mavenLocal()
+	maven {url 'http://maven.aliyun.com/nexus/content/groups/public/'}
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
+	//webSocket
+	implementation "org.springframework.boot:spring-boot-starter-websocket"
+	//servlet
+	compile group: 'javax.servlet', name: 'javax.servlet-api', version: '3.1.0'
+	//web
+	compile('org.springframework.boot:spring-boot-starter-web')
+	compile('org.springframework.boot:spring-boot-starter-thymeleaf')
+	compile group: 'net.sourceforge.nekohtml', name: 'nekohtml', version: '1.9.22'  //让thymeleaf解析标签没有闭合时通过
+	//pagehelper
+	compile('com.github.pagehelper:pagehelper-spring-boot-starter:1.2.3')
+	compile('commons-lang:commons-lang:2.6')
+	//mybatis
+	compile group: 'tk.mybatis', name: 'mapper-spring-boot-starter', version: '2.1.5'
+	compile group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
+	//json
+	compile "com.alibaba:fastjson:1.2.31"
+	//okHttp
+	compile("com.squareup.okhttp3:okhttp:3.8.1") {
+		exclude(group: "com.google.android")  //java中使用排除android依赖
+	}
+	//导入导出 easy-poi
+	compile 'cn.afterturn:easypoi-spring-boot-starter:4.0.0'
+
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	compile group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
+}
