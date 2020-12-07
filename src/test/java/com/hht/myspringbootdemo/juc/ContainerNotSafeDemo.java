@@ -16,8 +16,8 @@ public class ContainerNotSafeDemo {
     public static void main(String[] args) {
         //listNotSafe();
 
-        //Set<String> list = new HashSet<>();
-        Set<String> list = new CopyOnWriteArraySet<>();
+        Set<String> list = new HashSet<>();  //出现并发修改异常,不同线程间的添加元素导致
+        //Set<String> list = new CopyOnWriteArraySet<>();
 
         for (int i = 0; i < 30; i++) {
             new Thread(() -> {
