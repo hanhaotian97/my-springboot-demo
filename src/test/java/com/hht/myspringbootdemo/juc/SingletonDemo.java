@@ -6,6 +6,7 @@ package com.hht.myspringbootdemo.juc;
  * <br/>CreateTime 2020/7/6
  */
 public class SingletonDemo {
+    //volatile保证构造方法执行顺序不会被编译器指令重排
     private static volatile SingletonDemo instance;
 
     public SingletonDemo() {
