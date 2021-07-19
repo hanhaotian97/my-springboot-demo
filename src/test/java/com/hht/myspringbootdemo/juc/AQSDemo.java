@@ -17,31 +17,30 @@ public class AQSDemo {
         //cyclicBarrier();
         //semaphore();
         lockSupport();
-
     }
 
     /**
      * lockSupport演示
      */
     private static void lockSupport() {
-        Thread t1=new Thread(()->{
-            System.out.println(Thread.currentThread().getName()+"\t"+"coming....");
+        Thread t1 = new Thread(() -> {
+            System.out.println(Thread.currentThread().getName() + "\t" + "coming....");
             //阻塞：permit默认是O，调用park()方法会阻塞当前线程，直到permit被设置为1时park方法被唤醒，然后会将permit再次设置为O并返回
             LockSupport.park();
             //多次park()会导致程序处于一直等待的状态
             //LockSupport.park();
-            System.out.println(Thread.currentThread().getName()+"\t"+"被B唤醒了");
-        },"A");
+            System.out.println(Thread.currentThread().getName() + "\t" + "被B唤醒了");
+        }, "A");
         t1.start();
 
-        Thread t2=new Thread(()->{
-            System.out.println(Thread.currentThread().getName()+"\t"+"唤醒A线程");
+        Thread t2 = new Thread(() -> {
+            System.out.println(Thread.currentThread().getName() + "\t" + "唤醒A线程");
             //唤醒：调用unpark(thread)方法会将线程的许可permit设置成1，并自动唤醒线程
             LockSupport.unpark(t1);
             //因为permit值最多为1，多次调用unpark也只给park一个通行证
             //LockSupport.unpark(t1);
-            System.out.println(Thread.currentThread().getName()+"\t"+"A线程已唤醒");
-        },"B");
+            System.out.println(Thread.currentThread().getName() + "\t" + "A线程已唤醒");
+        }, "B");
         t2.start();
     }
 
@@ -116,23 +115,23 @@ public class AQSDemo {
      * countDownLatch
      */
     private static void countDownLatch() throws InterruptedException {
-        CountDownLatch countDownLatch=new CountDownLatch(12);
+        CountDownLatch countDownLatch = new CountDownLatch(12);
 
-        for (int i = 1; i <=6; i++) {
-            new Thread(()->{
-                System.out.println(Thread.currentThread().getName()+"\t执行");
+        for (int i = 1; i <= 6; i++) {
+            new Thread(() -> {
+                System.out.println(Thread.currentThread().getName() + "\t执行");
                 countDownLatch.countDown();
-            },"线程A"+i).start();
+            }, "线程A" + i).start();
         }
-        for (int i = 1; i <=6; i++) {
-            new Thread(()->{
-                System.out.println(Thread.currentThread().getName()+"\t执行");
+        for (int i = 1; i <= 6; i++) {
+            new Thread(() -> {
+                System.out.println(Thread.currentThread().getName() + "\t执行");
                 countDownLatch.countDown();
-            },"线程B"+i).start();
+            }, "线程B" + i).start();
         }
 
         countDownLatch.await();
-        System.out.println(Thread.currentThread().getName()+"\t所有子线程执行完毕, 继续执行主业务");
+        System.out.println(Thread.currentThread().getName() + "\t所有子线程执行完毕, 继续执行主业务");
     }
 
 }

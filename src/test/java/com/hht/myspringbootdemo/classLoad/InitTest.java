@@ -16,7 +16,7 @@ public class InitTest {
      * 3. 初始化: 对静态变量进行初始化，执行静态块，创建类的实例
      */
     public static void main(String[] args) {
-        LinkTest test2 = new LinkTest();
-        System.out.println("Test2实例化结束"+test2.toString());
+        LinkTest testMain = new LinkTest("testMain");
+        System.out.println("testMain 实例化结束"+testMain.toString());
     }
 }

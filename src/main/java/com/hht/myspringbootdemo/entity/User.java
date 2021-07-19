@@ -28,6 +28,16 @@ public class User implements Serializable {
     */
     private Date addtime;
 
+    public User() {
+    }
+
+    public User(Integer id, String name, Integer status, Date addtime) {
+        this.id = id;
+        this.name = name;
+        this.status = status;
+        this.addtime = addtime;
+    }
+
 
     public Integer getId() {
         return id;
@@ -61,4 +71,8 @@ public class User implements Serializable {
         this.addtime = addtime;
     }
 
+    @Override
+    public String toString() {
+        return "User{" + "id=" + id + ", name='" + name + '\'' + ", status=" + status + ", addtime=" + addtime + '}';
+    }
 }

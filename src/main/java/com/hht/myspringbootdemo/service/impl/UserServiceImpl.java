@@ -24,6 +24,7 @@ public class UserServiceImpl implements UserService {
     @Resource
     private UserDao userDao;
 
+    @Override
     @Async
     public void sendSms(){
         System.out.println("####sendSms####   2");
