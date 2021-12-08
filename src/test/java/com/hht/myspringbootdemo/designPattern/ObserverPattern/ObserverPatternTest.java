@@ -2,33 +2,33 @@ package com.hht.myspringbootdemo.designPattern.ObserverPattern;
 
 import com.alibaba.fastjson.JSONObject;
 import com.hht.myspringbootdemo.BaseTest;
-import com.hht.myspringbootdemo.config.MyEventPublisher;
-import com.hht.myspringbootdemo.config.TaskEvent;
+import com.hht.myspringbootdemo.config.MyTaskEvent;
+import com.hht.myspringbootdemo.config.MyTaskEventPublisher;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationEvent;
 
 /**
  * <br/>Author hanhaotian
- * <br/>Description :
+ * <br/>Description : 观察者模式
  * <br/>CreateTime 2021/6/18
  */
 public class ObserverPatternTest extends BaseTest
 {
 
     @Autowired
-    private MyEventPublisher myEventPublisher;
+    private MyTaskEventPublisher myEventPublisher;
 
     /**
      * spring的自定义监听器
      */
     @Test
-    public void testSpringListener() {
+    public void testTaskEventSpringListener() {
+        System.out.println("\ntestTaskEventSpringListener: 发送自定义邮件事件");
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("email","xxxx@gmail.com");
-        jsonObject.put("msg","sign success!");
-        myEventPublisher.publishEvent(new TaskEvent(jsonObject));
+        jsonObject.put("email", "xxxx@gmail.com");
+        jsonObject.put("msg", "sign success!");
+        myEventPublisher.publishEvent(new MyTaskEvent(jsonObject));
+        System.out.println("testTaskEventSpringListener: 发送自定义邮件事件完成\n");
     }
 
     public static void main(String[] args) {

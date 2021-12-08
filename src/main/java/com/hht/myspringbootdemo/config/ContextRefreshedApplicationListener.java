@@ -19,7 +19,7 @@ import java.util.Map;
 public class ContextRefreshedApplicationListener implements ApplicationListener<ContextRefreshedEvent> {
     @Override
     public void onApplicationEvent(ContextRefreshedEvent contextRefreshedEvent) {
-        System.out.println("MyApplicationListener : 我被调用了。");
+        System.out.println("\nContextRefreshedApplicationListener : 我被调用了, 接下来我会获取所有的controller。");
         ApplicationContext applicationContext = contextRefreshedEvent.getApplicationContext();
         Map<String, Object> map = applicationContext.getBeansWithAnnotation(RequestMapping.class);
         map.forEach((key,value) ->{
@@ -29,5 +29,6 @@ public class ContextRefreshedApplicationListener implements ApplicationListener<
                 System.out.println("自定义的controller:"+ beanClass.getName() +", 访问路径:"+ Arrays.toString(annotation.value()));
             }
         });
+        System.out.println("ContextRefreshedApplicationListener : 调用结束。\n");
     }
 }

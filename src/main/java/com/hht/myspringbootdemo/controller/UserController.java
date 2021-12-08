@@ -1,13 +1,12 @@
 package com.hht.myspringbootdemo.controller;
 
-import com.hht.myspringbootdemo.entity.User;
+import com.hht.myspringbootdemo.entity.Car;
 import com.hht.myspringbootdemo.service.UserService;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.context.request.async.WebAsyncTask;
-import org.springframework.web.servlet.ModelAndView;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import java.util.concurrent.Callable;
 
 /**
  * 测试用表(User)表控制层
@@ -37,6 +36,11 @@ public class UserController {
         boolean b = userService.transactionTest();
         System.out.println(b);
         return "success";
+    }
+
+    @Bean(initMethod="init", destroyMethod="destroy")
+    public Car car() {
+        return new Car();
     }
 
 }
