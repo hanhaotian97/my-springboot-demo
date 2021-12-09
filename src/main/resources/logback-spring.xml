@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configuration debug="true">
+<configuration debug="false" scan="true" scanPeriod="60 seconds">
     <!-- 项目名称 -->
-    <property name="PROJECT_NAME" value="hthtgl"/>
+    <springProperty scope="context" name="PROJECT_NAME" source="spring.application.name"/>
 
     <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->
     <property name="LOG_HOME" value="${catalina.base:-.}/logs"/>
@@ -67,23 +67,6 @@
         </encoder>
     </appender>
     <logger name="my_info" additivity="true" level="info">
-        <appender-ref ref="MY_INFO_FILE"/>
-    </logger>
-
-    <!-- log4jdbc配置 -->
-    <logger name="jdbc.audit" additivity="true" level="ERROR">
-        <appender-ref ref="MY_INFO_FILE"/>
-    </logger>
-    <logger name="jdbc.sqlonly" additivity="true" level="ERROR">
-        <appender-ref ref="MY_INFO_FILE"/>
-    </logger>
-    <logger name="jdbc.resultset" additivity="true" level="ERROR">
-        <appender-ref ref="MY_INFO_FILE"/>
-    </logger>
-    <logger name="jdbc.connection" additivity="true" level="ERROR">
-        <appender-ref ref="MY_INFO_FILE"/>
-    </logger>
-    <logger name="jdbc.resultsettable" additivity="true" level="ERROR">
         <appender-ref ref="MY_INFO_FILE"/>
     </logger>
 

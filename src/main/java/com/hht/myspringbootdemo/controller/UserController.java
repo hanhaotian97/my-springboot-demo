@@ -1,8 +1,6 @@
 package com.hht.myspringbootdemo.controller;
 
-import com.hht.myspringbootdemo.entity.Car;
 import com.hht.myspringbootdemo.service.UserService;
-import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,11 +34,6 @@ public class UserController {
         boolean b = userService.transactionTest();
         System.out.println(b);
         return "success";
-    }
-
-    @Bean(initMethod="init", destroyMethod="destroy")
-    public Car car() {
-        return new Car();
     }
 
 }

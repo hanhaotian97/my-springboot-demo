@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-      name: hthtgl
+      name: myspringbootdemo
   # 选择加载不同环境的配置文件
   profiles:
     active: dev
