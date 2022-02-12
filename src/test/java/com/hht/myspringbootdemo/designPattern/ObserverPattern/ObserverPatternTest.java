@@ -23,7 +23,7 @@ public class ObserverPatternTest extends BaseTest
      */
     @Test
     public void testTaskEventSpringListener() {
-        System.out.println("\ntestTaskEventSpringListener: 发送自定义邮件事件");
+        System.out.println("\ntestTaskEventSpringListener: 发送自定义邮件事件开始");
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("email", "xxxx@gmail.com");
         jsonObject.put("msg", "sign success!");
