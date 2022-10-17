@@ -44,4 +44,9 @@ dependencies {
 
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	compile group: 'org.projectlombok', name: 'lombok', version: '1.18.8'
+
+	compile 'org.seleniumhq.selenium:selenium-java:3.4.0'
+	
+	implementation 'cn.hutool:hutool-all:5.8.8'
+
 }
