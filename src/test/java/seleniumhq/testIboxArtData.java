@@ -34,33 +34,6 @@ public class testIboxArtData {
         Thread.sleep(1000);
 
         Actions action = new Actions(driver);
-        //藏品列表最外层
-        /*List<WebElement> elementsByClassName = driver.findElementsByClassName("product-container");
-        for (WebElement webElement : elementsByClassName) {
-            WebElement img = webElement.findElement(By.tagName("img"));
-            String imgSrc = img.getAttribute("src");
-            System.out.println(driver.getCurrentUrl() + "   " + imgSrc);
-
-            //鼠标点击进入藏品详情
-            WebElement button = webElement.findElement(By.tagName("button"));
-            WebElement spanText = button.findElement(By.className("text"));
-            //先将光标移动到封面图聚焦，再点击进入详情
-            action.moveToElement(img).perform();
-            action.moveToElement(spanText).perform();
-            action.click().perform();
-
-            Thread.sleep(1000);
-
-            //藏品详情页操作
-            WebElement pName = driver.findElement(By.className("p-name"));
-            String productName = pName.getText();
-            String currentUrl = driver.getCurrentUrl();
-            System.out.println(currentUrl + "   " + productName);
-
-            // 浏览器后退，回到列表页
-            driver.navigate().back();
-        }*/
-
         //藏品列表最外层, 每500ms检测一次目标元素是否可见, 否则等待30s
         List<WebElement> elementsByClassName2 = new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.className("product-container")));
         Map<Integer, String> imgMap = new HashMap<>();
@@ -70,7 +43,7 @@ public class testIboxArtData {
             WebElement img = webElement.findElement(By.tagName("img"));
             String imgSrc = img.getAttribute("src");
             while (!StrUtil.sub(imgSrc, 0, 4).equals("http")) {
-                Thread.sleep(3000);
+                Thread.sleep(1000);
                 img = webElement.findElement(By.tagName("img"));
                 imgSrc = img.getAttribute("src");
                 System.out.println("获取藏品概览图片地址中...");
@@ -79,20 +52,22 @@ public class testIboxArtData {
                 new Actions(driver).sendKeys(Keys.PAGE_DOWN).perform();
             }
             imgMap.put(currentNum++, imgSrc);
+
+            if (imgMap.size() >= 1) {
+                break;
+            }
         }
 
-        for (int i = 0; i < 30; i++) {
+        for (int i = 0; i < imgMap.size(); i++) {
             //每次都查找一次列表元素
-            List<WebElement> elementsByClassName = new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.className("product-container")));
-            WebElement webElement = elementsByClassName.get(i);
-
-            //等待, 直到获取图片src
-            WebElement img = webElement.findElement(By.tagName("img"));
+            List<WebElement> productElementList = new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.className("product-container")));
+            WebElement productElement = productElementList.get(i);
 
             //先将光标移动到封面图聚焦, 再移动到触发点, 点击进入藏品详情
-            WebElement button = webElement.findElement(By.tagName("button"));
+            WebElement imgElement = productElement.findElement(By.tagName("img"));
+            WebElement button = productElement.findElement(By.tagName("button"));
             WebElement spanText = button.findElement(By.className("text"));
-            action.moveToElement(img).perform();
+            action.moveToElement(imgElement).perform();
             action.moveToElement(spanText).perform();
             action.click().perform();
 
@@ -101,15 +76,34 @@ public class testIboxArtData {
             WebElement pNameElement = new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOfElementLocated(By.className("p-name")));
             String pId = StrUtil.subBetween(driver.getCurrentUrl(), "id=", "&");
             String pName = StrUtil.subBefore(pNameElement.getText(), "#", true);
-            System.out.println("当前次数:" + i + ", pId:" + pId + ", pName:" + pName + ", imgSrc:" + imgMap.get(i));
 
+            Long distributeNum = 0L;
+            Long circulationNum = 0L;
+            List<WebElement> dcnContainer = driver.findElements(By.className("dcn-container"));
+            if (CollUtil.isNotEmpty(dcnContainer) && dcnContainer.size() >= 2) {
+                WebElement dcn1 = dcnContainer.get(2);
+                List<WebElement> span1 = dcn1.findElements(By.tagName("span"));
+                if (CollUtil.isNotEmpty(span1) && span1.size() >= 2) {
+                    String numStrFull = span1.get(1).getText();
+                    String numStr = StrUtil.subBefore(numStrFull, "份", false);
+                    distributeNum = Long.valueOf(numStr);
+                }
 
-            List<WebElement> dcnTitles = driver.findElements(By.className("dcn-title"));
-            if (CollUtil.isNotEmpty(dcnTitles) && dcnTitles.size() >= 2) {
-
+                WebElement dcn2 = dcnContainer.get(3);
+                List<WebElement> span2 = dcn2.findElements(By.tagName("span"));
+                if (CollUtil.isNotEmpty(span2) && span2.size() >= 2) {
+                    WebElement webElement = span2.get(1);
+                    String numStr = StrUtil.subBefore(webElement.getText(), "份", false);
+                    circulationNum = Long.valueOf(numStr);
+                }
             }
 
+            WebElement priceElement = driver.findElement(By.className("o-price"));
+            String priceText = priceElement.getText();
+            String priceStr = StrUtil.subAfter(priceText, "￥", false).trim();
+            Double price = Double.valueOf(priceStr);
 
+            System.out.println("当前次数:" + i + ", pId:" + pId + ", pName:" + pName + ", 最新价格:" + price + ", 发行量:" + distributeNum + ", 流通量:" + circulationNum + ", imgSrc:" + imgMap.get(i));
             // 浏览器后退，回到列表页
             driver.navigate().back();
             Thread.sleep(3000);
@@ -135,8 +129,11 @@ public class testIboxArtData {
         String currentUrl = "https://www.ibox.art/zh-cn/item/?id=100515008&gid=106038283 ";
         String pId = StrUtil.subBetween(currentUrl, "id=", "&");
         String pName = StrUtil.subBefore("嵌泅庭#356", "#", true);
-        System.out.println("pId:" + pId + ", pName:" + pName);
 
+
+        String numStr = StrUtil.subBefore("1000份", "份", false);
+
+        System.out.println("pId:" + pId + ", pName:" + pName);
         System.out.println(StrUtil.sub(currentUrl, 0, 4));
     }
 
