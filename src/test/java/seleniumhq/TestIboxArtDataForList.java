@@ -3,31 +3,38 @@ package seleniumhq;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import org.junit.Test;
-import org.openqa.selenium.By;
-import org.openqa.selenium.Keys;
-import org.openqa.selenium.PageLoadStrategy;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 
 /**
  * <br/>Description : 描述
  * <br/>CreateTime : 2022/10/17
  * @author hanhaotian
  */
-public class testIboxArtData {
+public class TestIboxArtDataForList {
     public static void main(String[] args) throws InterruptedException {
         // System.getProperties().setProperty("webdriver.chrome.driver", "C:\\Program Files\\Google\\Chrome\\Application\\chromedriver.exe");
         ChromeOptions options = new ChromeOptions();
         addArguments(options);
+
+
+        handleNewProduct(options);
+    }
+
+    /**
+     * 在一级市场页面,循环处理每一个藏品
+     * @param options options
+     */
+    private static void handleNewProduct(ChromeOptions options) throws InterruptedException {
         ChromeDriver driver = new ChromeDriver(options);
         //一级市场-藏品
         driver.get("https://www.ibox.art/zh-cn/find/");
@@ -35,10 +42,11 @@ public class testIboxArtData {
 
         Actions action = new Actions(driver);
         //藏品列表最外层, 每500ms检测一次目标元素是否可见, 否则等待30s
-        List<WebElement> elementsByClassName2 = new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.className("product-container")));
+        List<WebElement> webElementsListForImg = new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOfAllElementsLocatedBy(By.className("product-container")));
         Map<Integer, String> imgMap = new HashMap<>();
-        int currentNum = 0;
-        for (WebElement webElement : elementsByClassName2) {
+        int readNum = 1;  //遍历读取的封面图数量
+        for (int i = 0; i < webElementsListForImg.size(); i++) {
+            WebElement webElement = webElementsListForImg.get(i);
             //等待, 直到获取图片src
             WebElement img = webElement.findElement(By.tagName("img"));
             String imgSrc = img.getAttribute("src");
@@ -51,9 +59,9 @@ public class testIboxArtData {
                 //由于图片是懒加载的需要向下滚动
                 new Actions(driver).sendKeys(Keys.PAGE_DOWN).perform();
             }
-            imgMap.put(currentNum++, imgSrc);
+            imgMap.put(i++, imgSrc);
 
-            if (imgMap.size() >= 1) {
+            if (imgMap.size() >= readNum) {
                 break;
             }
         }
@@ -77,6 +85,7 @@ public class testIboxArtData {
             String pId = StrUtil.subBetween(driver.getCurrentUrl(), "id=", "&");
             String pName = StrUtil.subBefore(pNameElement.getText(), "#", true);
 
+            //获取铸造量和流通量
             Long distributeNum = 0L;
             Long circulationNum = 0L;
             List<WebElement> dcnContainer = driver.findElements(By.className("dcn-container"));
@@ -98,10 +107,16 @@ public class testIboxArtData {
                 }
             }
 
-            WebElement priceElement = driver.findElement(By.className("o-price"));
-            String priceText = priceElement.getText();
-            String priceStr = StrUtil.subAfter(priceText, "￥", false).trim();
-            Double price = Double.valueOf(priceStr);
+            //获取藏品价格:当没有挂单时页面展示[已售出],此时设置价格为0
+            Double price;
+            try {
+                WebElement priceElement = driver.findElement(By.className("o-price"));
+                String priceText = priceElement.getText();
+                String priceStr = StrUtil.subAfter(priceText, "￥", false).trim();
+                price = Double.valueOf(priceStr);
+            } catch (Exception e) {
+                price = 0.0;
+            }
 
             System.out.println("当前次数:" + i + ", pId:" + pId + ", pName:" + pName + ", 最新价格:" + price + ", 发行量:" + distributeNum + ", 流通量:" + circulationNum + ", imgSrc:" + imgMap.get(i));
             // 浏览器后退，回到列表页
@@ -128,16 +143,40 @@ public class testIboxArtData {
     public void test() {
         String currentUrl = "https://www.ibox.art/zh-cn/item/?id=100515008&gid=106038283 ";
         String pId = StrUtil.subBetween(currentUrl, "id=", "&");
-        String pName = StrUtil.subBefore("嵌泅庭#356", "#", true);
-
-
+        String pName = StrUtil.subBefore("月球漫步者传奇一刻 #15#1", "#", true);
+        String pName2 = StrUtil.subBefore("一見有喜 平安長樂#830", "#", true);
         String numStr = StrUtil.subBefore("1000份", "份", false);
 
-        System.out.println("pId:" + pId + ", pName:" + pName);
+        System.out.println("pId:" + pId + ", pName:" + pName + ", pName2:" + pName2);
         System.out.println(StrUtil.sub(currentUrl, 0, 4));
+
+        filterBlockWord("盲盒优先购*3+日出红莲优先购*1");
+        filterBlockWord("升级卡03");
+        filterBlockWord("抽奖资格卡");
+        filterBlockWord("《盲盒优先购*4》资格卡");
     }
 
-    private static void addArguments(ChromeOptions options) {
+    public static boolean filterBlockWord(String pName){
+        for (String s : blockWordList) {
+            if (pName.contains(s)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static List<String> blockWordList = new ArrayList<String>() {{
+        add("优先购");
+        add("优先抢");
+        add("徽章");
+        add("勋章");
+        add("资格卡");
+        add("升级卡");
+        add("抽奖");
+        add("抽签");
+    }};
+
+    public static void addArguments(ChromeOptions options) {
         // EAGER 等待整个dom树加载完成，即DOMContentLoaded这个事件完成，也就是只要 HTML 完全加载和解析完毕就开始执行操作。放弃等待图片、样式、子帧的加载。
         // 因为要获取图片, 所以使用NORMAL模式
         options.setPageLoadStrategy(PageLoadStrategy.EAGER);
