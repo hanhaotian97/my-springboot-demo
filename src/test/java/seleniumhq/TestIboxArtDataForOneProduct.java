@@ -26,8 +26,8 @@ public class TestIboxArtDataForOneProduct {
 
         ChromeDriver driver = new ChromeDriver(options);
         Actions action = new Actions(driver);
-        Long startPid = 100515149L;  //库中最新的藏品id
-        Long latestPId = null;  //最新的藏品id
+        Long startPid = 100513304L;  //库中最新的藏品id
+        Long latestPId = 100513305L;  //最新的藏品id
         //1.获取采集的范围: 一级市场列表页的第一个藏品id -> 库中最新的藏品id
         if (latestPId == null || latestPId <= 0) {
             driver.get("https://www.ibox.art/zh-cn/find/");
@@ -53,7 +53,7 @@ public class TestIboxArtDataForOneProduct {
         }
 
         //2.遍历pid,获取每个藏品详情,从库中最老藏品 到 列表中最新藏品
-        for (Long i = startPid; i < latestPId; i++) {
+        for (Long i = startPid; i <= latestPId; i++) {
             driver.get("https://ibox.art/zh-cn/item/?id=" + i);
             Thread.sleep(3000);
 
@@ -62,11 +62,20 @@ public class TestIboxArtDataForOneProduct {
             String pName = StrUtil.subBefore(pNameElement.getText(), "#", true);
             //过滤名称为"--#"的藏品
             if (pName.equalsIgnoreCase("--")) {
-                log.info("无效的pid:{}", i);
+                log.error("无效的pid:{}", i);
                 continue;
             }
             if (!TestIboxArtDataForList.filterBlockWord(pName)) {
-                log.info("无效的pid:{}, 藏品名称不符合规则:{}", i, pName);
+                log.error("无效的pid:{}, 藏品名称不符合规则:{}", i, pName);
+                continue;
+            }
+
+            //查看藏品状态
+            WebElement buyBtnEle = driver.findElement(By.className("btn-buy"));
+            WebElement buyStatusEle = buyBtnEle.findElement(By.className("text"));
+            String text = buyStatusEle.getText();
+            if (text.equalsIgnoreCase("已提出平台")) {
+                log.error("无效的pid:{}, 该藏品已被提出平台:{}", i, pName);
                 continue;
             }
 
