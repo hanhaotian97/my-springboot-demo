@@ -4,6 +4,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
@@ -12,6 +13,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * <br/>Description : 描述
@@ -25,9 +27,11 @@ public class TestIboxArtDataForOneProduct {
         TestIboxArtDataForList.addArguments(options);
 
         ChromeDriver driver = new ChromeDriver(options);
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         Actions action = new Actions(driver);
-        Long startPid = 100513304L;  //库中最新的藏品id
-        Long latestPId = 100513305L;  //最新的藏品id
+        //Long startPid = 100513304L;  //库中最新的藏品id
+        Long startPid = 1005156L;  //库中最新的藏品id
+        Long latestPId = 100515607L;  //最新的藏品id
         //1.获取采集的范围: 一级市场列表页的第一个藏品id -> 库中最新的藏品id
         if (latestPId == null || latestPId <= 0) {
             driver.get("https://www.ibox.art/zh-cn/find/");
@@ -55,7 +59,18 @@ public class TestIboxArtDataForOneProduct {
         //2.遍历pid,获取每个藏品详情,从库中最老藏品 到 列表中最新藏品
         for (Long i = startPid; i <= latestPId; i++) {
             driver.get("https://ibox.art/zh-cn/item/?id=" + i);
-            Thread.sleep(3000);
+
+            //获取藏品图片
+            String imgSrc = "";
+            try {
+                //存在该元素, 表示是一个有效藏品, 且页面加载完成
+                WebElement imgContainer = new WebDriverWait(driver, 10).until(ExpectedConditions.elementToBeClickable(By.className("media-wrapper")));
+                WebElement imgElement = imgContainer.findElement(By.tagName("img"));
+                imgSrc = imgElement.getAttribute("src");
+            } catch (Exception e) {
+                log.error("无效的pid:{}", i);
+                continue;
+            }
 
             //藏品详情页操作
             WebElement pNameElement = new WebDriverWait(driver, 30).until(ExpectedConditions.visibilityOfElementLocated(By.className("p-name")));
@@ -78,11 +93,6 @@ public class TestIboxArtDataForOneProduct {
                 log.error("无效的pid:{}, 该藏品已被提出平台:{}", i, pName);
                 continue;
             }
-
-            //获取藏品图片
-            WebElement imgContainer = driver.findElement(By.className("media-wrapper"));
-            WebElement imgElement = imgContainer.findElement(By.tagName("img"));
-            String imgSrc = imgElement.getAttribute("src");
 
             //获取铸造量和流通量
             Long distributeNum = 0L;
@@ -121,5 +131,11 @@ public class TestIboxArtDataForOneProduct {
             //System.out.println("当前藏品pId:" + i + ", pName:" + pName + ", 最新价格:" + price + ", 发行量:" + distributeNum + ", 流通量:" + circulationNum + ", imgSrc:" + imgSrc);
         }
     }
+
+    public void  waitPageLoadComplete(ChromeDriver driver,long timeOutSeconds) {
+        new WebDriverWait(driver, timeOutSeconds).until(
+                webDriver -> ((JavascriptExecutor) webDriver).executeScript("return document.readyState").equals("complete"));
+    }
+
 
 }
