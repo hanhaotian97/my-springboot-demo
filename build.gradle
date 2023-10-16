@@ -27,12 +27,12 @@ dependencies {
 	compile group: 'net.sourceforge.nekohtml', name: 'nekohtml', version: '1.9.22'  //让thymeleaf解析标签没有闭合时通过
 	//pagehelper
 	compile('com.github.pagehelper:pagehelper-spring-boot-starter:1.2.3')
-	compile('commons-lang:commons-lang:2.6')
+	compile('commons-lang:commons-lang:2.7')
 	//mybatis
 	compile group: 'tk.mybatis', name: 'mapper-spring-boot-starter', version: '2.1.5'
 	compile group: 'mysql', name: 'mysql-connector-java', version: '6.0.6'
 	//json
-	compile "com.alibaba:fastjson:1.2.31"
+	compile "com.alibaba:fastjson:1.2.83"
 	//okHttp
 	compile("com.squareup.okhttp3:okhttp:3.8.1") {
 		exclude(group: "com.google.android")  //java中使用排除android依赖
@@ -47,6 +47,6 @@ dependencies {
 
 	compile 'org.seleniumhq.selenium:selenium-java:3.4.0'
 	
-	implementation 'cn.hutool:hutool-all:5.8.8'
+	implementation 'cn.hutool:hutool-all:5.8.21'
 
 }
