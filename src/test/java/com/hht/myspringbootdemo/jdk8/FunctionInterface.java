@@ -203,7 +203,7 @@ public class FunctionInterface {
             }
         };
         Person person = Optional.ofNullable(person4).orElseGet(supplier);
-        System.out.println("person4 为空 执行supplier.get()方法" + person);
+        System.out.println("person4 为空 执行supplier.getTokenAndKey()方法" + person);
 
         Optional.ofNullable(person4).orElseThrow(() -> new NoSuchFieldError("person4 元素为空 报错!"));
     }

@@ -20,20 +20,7 @@ public class OrderPrintNum {
 
     public static void main(String[] args) throws InterruptedException {
         initData();
-
         runPrint2();
-        /*POOL_SERVICE.execute(new PrintThread1(QUEUE, 2));
-        POOL_SERVICE.execute(new PrintThread1(QUEUE, 1));
-        POOL_SERVICE.execute(new PrintThread1(QUEUE, 0));
-
-        POOL_SERVICE.shutdown();
-
-        while (true) {
-            if (POOL_SERVICE.isTerminated()) {
-                System.out.println("finished!!");
-                break;
-            }
-        }*/
     }
 
     private static void initData() {
@@ -133,9 +120,7 @@ class PrintThread2 implements Runnable {
                 }
                 System.out.println("thread-" + this.threadNo + ":" + count);
                 count++;
-
                 c.signalAll();
-
             } finally {
                 lock.unlock();
             }

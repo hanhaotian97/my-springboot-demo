@@ -8,7 +8,7 @@ import java.util.concurrent.*;
  * 1：继承thread类
  * 2：实现runnable接口, 没有返回值, run()方法异常只能在内部消化，不能往上继续抛
  * 3：实现callable接口, 带有返回值，是个泛型，和Future、FutureTask配合可以用来获取异步执行的结果.
- * Callable接口支持返回执行结果，需要调用FutureTask.get()得到，此方法会阻塞主进程的继续往下执行直到获得结果，如果不调用不会阻塞。
+ * Callable接口支持返回执行结果，需要调用FutureTask.getTokenAndKey()得到，此方法会阻塞主进程的继续往下执行直到获得结果，如果不调用不会阻塞。
  * callable接口的call()方法允许抛出异常
  * <br/>CreateTime : 2022/2/14
  * @author hanhaotian

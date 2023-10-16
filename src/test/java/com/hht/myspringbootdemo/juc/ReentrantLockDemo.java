@@ -1,7 +1,6 @@
 package com.hht.myspringbootdemo.juc;
 
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -64,7 +63,7 @@ class phone implements Runnable {
     public void get() {
         lock.lock();
         try {
-            System.out.println(Thread.currentThread().getId() + "\t get");
+            System.out.println(Thread.currentThread().getId() + "\t getTokenAndKey");
             set();
         } finally {
             lock.unlock();
