@@ -36,4 +36,14 @@ public class UserController {
         return "success";
     }
 
+    //@Transactional
+    @RequestMapping("/get")
+    public String get(){
+        String x = userService.queryById(1).toString();
+        String x2= userService.queryById(1).toString();
+        System.out.println(x);
+        System.out.println(x2);
+        return x;
+    }
+
 }

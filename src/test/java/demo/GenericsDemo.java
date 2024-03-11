@@ -87,10 +87,10 @@ public class GenericsDemo {
         List<? super Apple> aa = fruits;
         aa.add(new Apple());
         aa.add(new RedApple());
-        // aa.add(new Strawberry());
-        // aa.add(new Fruit());
-        Object o = aa.get(0);
-        System.out.println(o);
+        Object o1 = aa.get(0);
+        System.out.println(o1);
+        Object o2 = aa.get(1);
+        System.out.println(o2);
     }
 }
 

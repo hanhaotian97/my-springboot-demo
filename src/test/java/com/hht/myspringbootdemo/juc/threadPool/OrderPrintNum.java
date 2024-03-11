@@ -7,11 +7,11 @@ import java.util.concurrent.locks.Condition;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * 3个线程互相交替打印
- * @Author : TommyYang
- * @Time : 2019-06-25 23:20
- * @Software: IntelliJ IDEA
- * @File : OrderPrintNum.java
+ * 3个线程互相交替打印0到100
+ * 例如:
+ * 线程1打印0,线程2打印1,线程3打印2,
+ * 线程1打印3,线程2打印4,线程3打印5
+ * ......
  */
 public class OrderPrintNum {
 
@@ -29,15 +29,12 @@ public class OrderPrintNum {
         }
     }
 
-
     // 方案二
     private static void runPrint2() {
         POOL_SERVICE.execute(new PrintThread2(0));
         POOL_SERVICE.execute(new PrintThread2(1));
         POOL_SERVICE.execute(new PrintThread2(2));
-
         POOL_SERVICE.shutdown();
-
         while (true) {
             if (POOL_SERVICE.isTerminated()) {
                 System.out.println("finished!!");

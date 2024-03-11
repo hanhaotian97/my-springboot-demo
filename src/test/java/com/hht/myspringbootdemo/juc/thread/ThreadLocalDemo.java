@@ -1,6 +1,5 @@
-package com.hht.myspringbootdemo.juc;
+package com.hht.myspringbootdemo.juc.thread;
 
-import java.security.PrivateKey;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -10,10 +9,15 @@ import java.util.concurrent.TimeUnit;
  */
 public class ThreadLocalDemo {
     public static void main(String[] args) {
-        ThreadLocal<String> local = new ThreadLocal<>();
+        threadLocalTest();
+    }
 
+    static int finalI = 1;
+
+    private static void threadLocalTest() {
+        ThreadLocal<String> local = new ThreadLocal<>();
         for (int i = 0; i < 10; i++) {
-            int finalI = i;
+            //int finalI = i;
             new Thread(() -> {
                 local.set(finalI + "");
                 System.out.println(Thread.currentThread().getName() + "\t 本地线程变量被设置为：" + finalI);
@@ -27,5 +31,6 @@ public class ThreadLocalDemo {
                 System.out.println(Thread.currentThread().getName() + "\t 获取的本地线程变量为：" + local.get());
             }, String.valueOf(i)).start();
         }
+        finalI = 99;
     }
 }

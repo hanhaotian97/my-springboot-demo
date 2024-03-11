@@ -2,7 +2,6 @@ package com.hht.myspringbootdemo.task;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,7 +28,7 @@ public class TaskDemo {
      * [2022-02-14 17:33:45.001] [springScheduler-6] test1, 5秒执行一次，每次执行sleep 8s
      * @throws InterruptedException
      */
-    @Scheduled(cron = "*/5 * * * * *")
+    //@Scheduled(cron = "*/5 * * * * *")
     public void test1() throws InterruptedException {
         log.info("test1, 5秒执行一次，每次执行sleep 8s");
         Thread.sleep(8000L);

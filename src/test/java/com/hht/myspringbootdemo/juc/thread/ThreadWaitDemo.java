@@ -1,4 +1,4 @@
-package com.hht.myspringbootdemo.juc;
+package com.hht.myspringbootdemo.juc.thread;
 
 import java.util.concurrent.locks.LockSupport;
 

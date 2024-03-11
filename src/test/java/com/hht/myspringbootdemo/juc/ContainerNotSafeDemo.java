@@ -1,11 +1,10 @@
 package com.hht.myspringbootdemo.juc;
 
-import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.math.NumberUtils;
-
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 /**
  * <br/>Author hanhaotian
@@ -14,22 +13,30 @@ import java.util.concurrent.CopyOnWriteArraySet;
  */
 public class ContainerNotSafeDemo {
     public static void main(String[] args) {
-        //listNotSafe();
+        listNotSafe();
+        //setNotSafe();
+    }
 
-        Set<String> list = new HashSet<>();  //出现并发修改异常,不同线程间的添加元素导致
-        //Set<String> list = new CopyOnWriteArraySet<>();
+    /**
+     * 模拟场景:多个线程对集合内容进行修改
+     */
+    private static void listNotSafe() {
+        //出现并发修改异常ConcurrentModificationException,不同线程间的添加元素导致
+        //List<String> list = new ArrayList<>();
+        //不会出现异常
+        List<String> list = new CopyOnWriteArrayList<>();
 
         for (int i = 0; i < 30; i++) {
             new Thread(() -> {
                 list.add(UUID.randomUUID().toString().substring(0, 8));
-                System.out.println(list);
-            }, String.valueOf(i)).start();
+                System.out.println(Thread.currentThread().getName() + " : " + list);
+            }, String.valueOf("线程-" + i)).start();
         }
     }
 
-    private static void listNotSafe() {
-        List<String> list = new ArrayList<>();
-        //List<String> list = new CopyOnWriteArrayList<>();
+    private static void setNotSafe() {
+        Set<String> list = new HashSet<>();
+        //Set<String> list = new CopyOnWriteArraySet<>();
 
         for (int i = 0; i < 30; i++) {
             new Thread(() -> {

@@ -15,11 +15,12 @@ spring:
       enabled: false
   # 数据库连接配置
   datasource:
-    url: jdbc:mysql://192.168.4.223:3306/qianpinyuan2.0.1?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=true
+    name: db
+    url: jdbc:mysql://127.0.0.1:3306/hht_test?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&useSSL=false
     username: root
     password: 1qaz2wsx
   main:
-      allow-bean-definition-overriding: true
+    allow-bean-definition-overriding: true
 
 
 pagehelper:
